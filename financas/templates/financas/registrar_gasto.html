@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Registrar Gasto</h1>
+    
+    <form method="POST">
+        {% csrf_token %}
+        
+        <!-- Mostra apenas os campos "descrição" e "valor" -->
+        {{ form.as_p }}
+
+        <button type="submit">Registrar</button>
+    </form>
+
+    <a href="{% url 'index' %}">Voltar</a>
+
+    <script>
+       // Certificando-se de que o valor da data é carregado corretamente no campo oculto
+      window.onload = function() {
+        const dataSelecionada = "{{ data }}";
+        if (dataSelecionada) {
+            document.getElementById('data-selecionada').value = dataSelecionada;
+        }
+    };
+    </script>
+</body>
+</html>

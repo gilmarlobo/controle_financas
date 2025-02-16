@@ -3,6 +3,7 @@ from django.utils.timezone import now
 from django.db.models import Sum
 from .forms import GastoForm
 from .models import Gasto
+from django.core.paginator import Paginator
 
 
 def index(request):
@@ -28,17 +29,23 @@ def index(request):
     # Ordenar os gastos por data
     gastos = gastos.order_by('data')
 
+    # Paginação - 10 itens por página
+    paginator = Paginator(gastos, 10)
+    page_number = request.GET.get('page')
+    gastos_paginados = paginator.get_page(page_number)
+
     # Calcular a soma dos valores filtrados
     gasto_filtrado_total = gastos.aggregate(Sum('valor'))['valor__sum'] or 0
     gasto_filtrado_total_formatado = f"R$ {gasto_filtrado_total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
     return render(request, 'financas/index.html', { 
         'gasto_total': gasto_total_formatado,
-        'gastos': gastos,
-        'gasto_filtrado_total': gasto_filtrado_total_formatado,  # Adicionando o total filtrado
+        'gastos': gastos_paginados,  # Agora está paginado
+        'gasto_filtrado_total': gasto_filtrado_total_formatado,
         'filtro_data': filtro_data,
         'filtro_descricao': filtro_descricao
-    }) 
+    })
+
 def registrar_gasto(request):
     data = request.GET.get('data', None)  # Captura a data da URL
 

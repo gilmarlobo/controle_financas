@@ -1,10 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendário</title>
+    <title>Finanças</title>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/ico">
     <style>
         .calendar {
             display: grid;
@@ -71,6 +73,32 @@
                 font-size: 14px;
             }
         }
+
+        .pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.pagination a, .pagination span {
+    margin: 3px;
+    padding: 8px 12px;
+    text-decoration: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.pagination a:hover {
+    background-color: #0056b3;
+}
+
+.pagination .current {
+    font-weight: bold;
+    background-color: #0056b3;
+}
+
+
     </style>
 </head>
 
@@ -119,6 +147,20 @@
             {% endfor %}
         </tbody>
     </table>
+  <!-- Controles de Paginação -->
+<div class="pagination">
+    {% if gastos.paginator.num_pages > 1 %}
+        {% for num in gastos.paginator.page_range %}
+            {% if num == gastos.number %}
+                <span class="current">{{ num }}</span>
+            {% else %}
+                <a href="?page={{ num }}{% if filtro_data %}&data={{ filtro_data }}{% endif %}{% if filtro_descricao %}&descricao={{ filtro_descricao }}{% endif %}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</div>
+
+
     <p>Total dos gastos filtrados: {{ gasto_filtrado_total }}</p>
     <script>
         function createCalendar() {
